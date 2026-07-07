@@ -53,6 +53,15 @@ function describeAccessibleAmenities(): string {
     .join(", ");
 }
 
+function describeTournamentSchedule(): string {
+  return data.tournamentMatches
+    .map(
+      (m) =>
+        `${m.teams} (${m.stage}) on ${m.date} at ${m.time} — Status: ${m.status}`
+    )
+    .join("; ");
+}
+
 /**
  * Builds the full system + context prompt sent to Gemini. This is the
  * single place where "stadium knowledge" (mock data) is turned into
@@ -91,6 +100,7 @@ export function buildPrompt(ctx: PromptContext): string {
 
   sections.push(`Transport options near the venue: ${describeTransport()}.`);
   sections.push(`Sustainability notes you can mention when relevant (don't force it into every reply): ${describeSustainability()}`);
+  sections.push(`Tournament match schedule & kickoff details: ${describeTournamentSchedule()}.`);
 
   sections.push(`Fan's message: "${ctx.message.replace(/"/g, "'")}"`);
 

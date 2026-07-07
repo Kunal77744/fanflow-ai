@@ -143,4 +143,22 @@ describe("POST /api/assistant", () => {
     const data = await res.json();
     expect(data.error).toMatch(/Invalid origin header/i);
   });
+
+  it("returns response from cache on repeated requests", async () => {
+    (isRateLimited as jest.Mock).mockReturnValue(false);
+    const replyText = "First call response";
+    (generateAssistantReply as jest.Mock).mockResolvedValue(replyText);
+
+    const req1 = createRequest({ message: "Hello cache test" });
+    const res1 = await POST(req1);
+    expect(res1.status).toBe(200);
+
+    const req2 = createRequest({ message: "Hello cache test" });
+    const res2 = await POST(req2);
+    expect(res2.status).toBe(200);
+
+    const data2 = await res2.json();
+    expect(data2.reply).toBe(replyText);
+    expect(generateAssistantReply).toHaveBeenCalledTimes(1);
+  });
 });

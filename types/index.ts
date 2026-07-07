@@ -41,6 +41,15 @@ export interface SustainabilityTip {
   message: string;
 }
 
+export interface TournamentMatch {
+  id: string;
+  date: string;
+  time: string;
+  teams: string;
+  stage: string;
+  status: string;
+}
+
 export interface StadiumData {
   stadiumName: string;
   gates: Gate[];
@@ -48,6 +57,7 @@ export interface StadiumData {
   amenities: Amenity[];
   transport: TransportOption[];
   sustainabilityTips: SustainabilityTip[];
+  tournamentMatches: TournamentMatch[];
 }
 
 export interface ChatRequestBody {
