@@ -5,8 +5,17 @@ import { buildPrompt } from "@/services/promptBuilder";
 import { generateAssistantReply, GeminiRequestError } from "@/services/geminiClient";
 import { getSimulatedCrowdLevels, findLowestCrowdGate } from "@/utils/crowdSimulator";
 import type { ChatApiResponse, ApiErrorResponse } from "@/types";
+import { logger } from "@/utils/logger";
 
 export const dynamic = "force-dynamic";
+
+interface CacheEntry {
+  response: ChatApiResponse;
+  timestamp: number;
+}
+
+const queryCache = new Map<string, CacheEntry>();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 function getClientKey(request: NextRequest): string {
   // Best-effort client identifier for rate limiting. Falls back to a
@@ -60,6 +69,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const cacheKey = `${messageCheck.sanitized!}_${sectionCheck.sanitized || ""}_${Boolean(accessibilityMode)}`;
+  const cached = queryCache.get(cacheKey);
+
+  if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+    logger.info("Serving response from cache", { cacheKey });
+    return NextResponse.json<ChatApiResponse>(cached.response);
+  }
+
   const crowdLevels = getSimulatedCrowdLevels();
 
   const prompt = buildPrompt({
@@ -80,8 +97,12 @@ export async function POST(request: NextRequest) {
       }),
     };
 
+    queryCache.set(cacheKey, { response, timestamp: Date.now() });
+    logger.info("Cached new response", { cacheKey });
+
     return NextResponse.json<ChatApiResponse>(response);
   } catch (err) {
+    logger.error("Error generating assistant reply", err);
     const message =
       err instanceof GeminiRequestError || (err instanceof Error && err.constructor.name === "GeminiRequestError")
         ? err.message

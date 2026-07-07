@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logger } from "@/utils/logger";
 
 const MODEL_NAME = "gemini-3.5-flash";
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -52,12 +53,14 @@ export async function generateAssistantReply(prompt: string): Promise<string> {
   };
 
   try {
+    logger.info("Sending request to Gemini API", { model: MODEL_NAME });
     return await attempt();
   } catch (firstError) {
-    // Single retry for transient network/provider hiccups only.
+    logger.warn("First attempt failed, retrying Gemini API request", { error: String(firstError) });
     try {
       return await attempt();
-    } catch {
+    } catch (secondError) {
+      logger.error("All Gemini API attempts failed", secondError);
       if (firstError instanceof GeminiRequestError) throw firstError;
       throw new GeminiRequestError("The assistant is temporarily unavailable. Please try again.");
     }
