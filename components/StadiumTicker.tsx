@@ -27,6 +27,7 @@ export function StadiumTicker() {
     let cancelled = false;
 
     async function poll() {
+      if (document.visibilityState !== "visible") return;
       try {
         const res = await fetch("/api/crowd-snapshot");
         if (!res.ok) return;

@@ -15,6 +15,13 @@ function getClientKey(request: NextRequest): string {
 }
 
 export async function POST(request: NextRequest) {
+  if (request.headers.get("content-length") && Number(request.headers.get("content-length")) > 5000) {
+    return NextResponse.json<ApiErrorResponse>(
+      { error: "Payload too large." },
+      { status: 413 }
+    );
+  }
+
   const clientKey = getClientKey(request);
 
   if (isRateLimited(clientKey)) {

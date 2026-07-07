@@ -92,7 +92,7 @@ export function buildPrompt(ctx: PromptContext): string {
   sections.push(`Transport options near the venue: ${describeTransport()}.`);
   sections.push(`Sustainability notes you can mention when relevant (don't force it into every reply): ${describeSustainability()}`);
 
-  sections.push(`Fan's message: "${ctx.message}"`);
+  sections.push(`Fan's message: "${ctx.message.replace(/"/g, "'")}"`);
 
   return sections.join("\n\n");
 }
