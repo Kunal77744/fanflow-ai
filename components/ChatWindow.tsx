@@ -83,8 +83,8 @@ export function ChatWindow() {
           </div>
         )}
 
-        {messages.map((m) => (
-          <MessageBubble key={m.timestamp} message={m} />
+        {messages.map((m, index) => (
+          <MessageBubble key={`${m.role}-${m.timestamp}-${index}`} message={m} />
         ))}
 
         {isLoading && (

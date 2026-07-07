@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CrowdLevel } from "@/types";
+import stadiumData from "@/data/stadium.json";
 
 interface GateStatus {
   gate: string;
@@ -21,7 +22,9 @@ const LEVEL_STYLES: Record<CrowdLevel, { label: string; color: string; dot: stri
  * the "real-time decision support" feature is visible, not just implied.
  */
 export function StadiumTicker() {
-  const [statuses, setStatuses] = useState<GateStatus[]>([]);
+  const [statuses, setStatuses] = useState<GateStatus[]>(() =>
+    stadiumData.gates.map((g) => ({ gate: g.id, level: g.crowdLevel as CrowdLevel }))
+  );
 
   useEffect(() => {
     let cancelled = false;

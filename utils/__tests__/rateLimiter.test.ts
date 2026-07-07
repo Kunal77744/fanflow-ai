@@ -32,4 +32,23 @@ describe("isRateLimited", () => {
     // A different client key must not be affected by another client's usage.
     expect(isRateLimited(freshClient)).toBe(false);
   });
+
+  it("prunes expired entries when the map size grows large", () => {
+    const realNow = Date.now;
+    let mockTime = 1000000;
+    Date.now = () => mockTime;
+
+    // Generate 1005 unique client requests to grow map size > 1000
+    for (let i = 0; i < 1005; i++) {
+      isRateLimited(`cleanup-client-${i}`);
+    }
+
+    // Move time forward past the window duration (1 minute)
+    mockTime += 61000;
+
+    // This request triggers the map check and prunes the expired entries
+    expect(isRateLimited("another-client")).toBe(false);
+
+    Date.now = realNow;
+  });
 });
