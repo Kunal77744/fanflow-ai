@@ -119,4 +119,28 @@ describe("POST /api/assistant", () => {
     const data = await res.json();
     expect(data.error).toMatch(/Something went wrong while reaching/i);
   });
+
+  it("returns 403 Forbidden if CSRF check fails due to origin host mismatch", async () => {
+    const req = createRequest({ message: "Hello" }, {
+      origin: "http://malicious.com",
+      host: "localhost"
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+    const data = await res.json();
+    expect(data.error).toMatch(/CSRF verification failed/i);
+  });
+
+  it("returns 403 Forbidden if CSRF check fails due to invalid origin format", async () => {
+    const req = createRequest({ message: "Hello" }, {
+      origin: "not-a-valid-url-format",
+      host: "localhost"
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+    const data = await res.json();
+    expect(data.error).toMatch(/Invalid origin header/i);
+  });
 });

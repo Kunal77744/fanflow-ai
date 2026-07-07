@@ -31,6 +31,27 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  if (origin && host) {
+    try {
+      const originHost = new URL(origin).host;
+      if (originHost !== host) {
+        logger.warn("CSRF check failed: origin host mismatch", { origin, host });
+        return NextResponse.json<ApiErrorResponse>(
+          { error: "Forbidden: CSRF verification failed." },
+          { status: 403 }
+        );
+      }
+    } catch (err) {
+      logger.error("CSRF check failed: invalid origin header", err);
+      return NextResponse.json<ApiErrorResponse>(
+        { error: "Forbidden: Invalid origin header." },
+        { status: 403 }
+      );
+    }
+  }
+
   const clientKey = getClientKey(request);
 
   if (isRateLimited(clientKey)) {

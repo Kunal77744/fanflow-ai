@@ -4,7 +4,12 @@ import { logger } from "@/utils/logger";
 const MODEL_NAME = "gemini-3.5-flash";
 const REQUEST_TIMEOUT_MS = 10_000;
 
-export class GeminiRequestError extends Error {}
+export class GeminiRequestError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "GeminiRequestError";
+  }
+}
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise((resolve, reject) => {
@@ -62,7 +67,10 @@ export async function generateAssistantReply(prompt: string): Promise<string> {
     } catch (secondError) {
       logger.error("All Gemini API attempts failed", secondError);
       if (firstError instanceof GeminiRequestError) throw firstError;
-      throw new GeminiRequestError("The assistant is temporarily unavailable. Please try again.");
+      throw new GeminiRequestError(
+        "The assistant is temporarily unavailable. Please try again.",
+        { cause: secondError }
+      );
     }
   }
 }

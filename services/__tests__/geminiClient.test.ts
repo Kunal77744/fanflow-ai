@@ -77,4 +77,22 @@ describe("generateAssistantReply", () => {
     );
     expect(mockGenerateContent).toHaveBeenCalledTimes(2);
   });
+
+  it("throws GeminiRequestError if response text is empty", async () => {
+    const mockGenerateContent = jest.fn().mockResolvedValue({
+      response: {
+        text: () => "   ",
+      },
+    });
+
+    (GoogleGenerativeAI as jest.Mock).mockImplementation(() => ({
+      getGenerativeModel: () => ({
+        generateContent: mockGenerateContent,
+      }),
+    }));
+
+    await expect(generateAssistantReply("Test prompt")).rejects.toThrow(
+      "The assistant returned an empty response."
+    );
+  });
 });
