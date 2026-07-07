@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  /* Stadium-at-night palette */
+  --stadium-navy: #0b1120;
+  --stadium-navy-light: #131c30;
+  --floodlight-white: #f5f7fa;
+  --turf-green: #2f9e44;
+  --turf-green-dim: #1f6b2e;
+  --floodlight-amber: #ffb74d;
+  --ticket-cream: #fff8e7;
+  --line-white: rgba(245, 247, 250, 0.14);
+
+  --background: var(--stadium-navy);
+  --foreground: var(--floodlight-white);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy: var(--stadium-navy);
+  --color-navy-light: var(--stadium-navy-light);
+  --color-turf: var(--turf-green);
+  --color-turf-dim: var(--turf-green-dim);
+  --color-amber: var(--floodlight-amber);
+  --color-cream: var(--ticket-cream);
+  --color-line: var(--line-white);
+  --font-display: var(--font-barlow-condensed);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+* {
+  border-color: var(--line-white);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(47, 158, 68, 0.15), transparent),
+    repeating-linear-gradient(
+      transparent,
+      transparent 39px,
+      var(--line-white) 39px,
+      var(--line-white) 40px
+    );
+}
+
+/* Respect reduced-motion preferences across the app */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible keyboard focus ring everywhere */
+:focus-visible {
+  outline: 2px solid var(--floodlight-amber);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Accessibility mode: high contrast + larger type */
+.a11y-mode {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+.a11y-mode body {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.scoreboard-digits {
+  font-family: var(--font-mono), monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}

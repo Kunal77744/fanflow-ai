@@ -1,0 +1,74 @@
+{
+  "stadiumName": "Horizon Park Stadium — FIFA World Cup 2026 (Demo Venue)",
+  "gates": [
+    {
+      "id": "Gate A",
+      "sections": ["101", "102", "103", "104"],
+      "crowdLevel": "medium",
+      "nearestAmenities": ["AM-01", "AM-05"],
+      "walkFromMainEntranceMin": 3
+    },
+    {
+      "id": "Gate B",
+      "sections": ["105", "106", "107", "108"],
+      "crowdLevel": "low",
+      "nearestAmenities": ["AM-02", "AM-06"],
+      "walkFromMainEntranceMin": 5
+    },
+    {
+      "id": "Gate C",
+      "sections": ["109", "110", "111", "112"],
+      "crowdLevel": "high",
+      "nearestAmenities": ["AM-03"],
+      "walkFromMainEntranceMin": 4
+    },
+    {
+      "id": "Gate D",
+      "sections": ["113", "114", "115", "116"],
+      "crowdLevel": "low",
+      "nearestAmenities": ["AM-04", "AM-07"],
+      "walkFromMainEntranceMin": 6
+    }
+  ],
+  "sections": [
+    { "id": "101", "gate": "Gate A", "rows": "A1-A20" },
+    { "id": "102", "gate": "Gate A", "rows": "A21-A40" },
+    { "id": "103", "gate": "Gate A", "rows": "A41-A60" },
+    { "id": "104", "gate": "Gate A", "rows": "A61-A80" },
+    { "id": "105", "gate": "Gate B", "rows": "B1-B20" },
+    { "id": "106", "gate": "Gate B", "rows": "B21-B40" },
+    { "id": "107", "gate": "Gate B", "rows": "B41-B60" },
+    { "id": "108", "gate": "Gate B", "rows": "B61-B80" },
+    { "id": "109", "gate": "Gate C", "rows": "C1-C20" },
+    { "id": "110", "gate": "Gate C", "rows": "C21-C40" },
+    { "id": "111", "gate": "Gate C", "rows": "C41-C60" },
+    { "id": "112", "gate": "Gate C", "rows": "C61-C80" },
+    { "id": "113", "gate": "Gate D", "rows": "D1-D20" },
+    { "id": "114", "gate": "Gate D", "rows": "D21-D40" },
+    { "id": "115", "gate": "Gate D", "rows": "D41-D60" },
+    { "id": "116", "gate": "Gate D", "rows": "D61-D80" }
+  ],
+  "amenities": [
+    { "id": "AM-01", "type": "washroom", "nearGate": "Gate A", "wheelchairAccessible": true, "label": "Washroom — Gate A Concourse" },
+    { "id": "AM-02", "type": "washroom", "nearGate": "Gate B", "wheelchairAccessible": true, "label": "Washroom — Gate B Concourse" },
+    { "id": "AM-03", "type": "washroom", "nearGate": "Gate C", "wheelchairAccessible": false, "label": "Washroom — Gate C Concourse" },
+    { "id": "AM-04", "type": "washroom", "nearGate": "Gate D", "wheelchairAccessible": true, "label": "Washroom — Gate D Concourse" },
+    { "id": "AM-05", "type": "food", "nearGate": "Gate A", "wheelchairAccessible": true, "label": "Food Court — Gate A" },
+    { "id": "AM-06", "type": "food", "nearGate": "Gate B", "wheelchairAccessible": true, "label": "Food Court — Gate B" },
+    { "id": "AM-07", "type": "medical", "nearGate": "Gate D", "wheelchairAccessible": true, "label": "First Aid Station — Gate D" },
+    { "id": "AM-08", "type": "info_desk", "nearGate": "Gate A", "wheelchairAccessible": true, "label": "Fan Info Desk — Main Entrance" },
+    { "id": "AM-09", "type": "refill_station", "nearGate": "Gate B", "wheelchairAccessible": true, "label": "Water Refill Station — Gate B" },
+    { "id": "AM-10", "type": "refill_station", "nearGate": "Gate D", "wheelchairAccessible": true, "label": "Water Refill Station — Gate D" }
+  ],
+  "transport": [
+    { "id": "TR-01", "type": "metro", "name": "Horizon Park Metro Station", "distanceKm": 0.5, "nearGate": "Gate B", "co2FriendlyNote": "Lowest-emission option for this venue" },
+    { "id": "TR-02", "type": "shuttle", "name": "Fan Shuttle Line 3", "distanceKm": 0.2, "nearGate": "Gate A" },
+    { "id": "TR-03", "type": "bus", "name": "City Bus Route 42", "distanceKm": 0.8, "nearGate": "Gate D" },
+    { "id": "TR-04", "type": "parking", "name": "North Parking Lot", "distanceKm": 1.2, "nearGate": "Gate C" }
+  ],
+  "sustainabilityTips": [
+    { "id": "ST-01", "nearGate": "Gate B", "message": "Free water refill station 80m from Gate B — bring a reusable bottle to cut down on plastic waste." },
+    { "id": "ST-02", "nearGate": "Gate D", "message": "Free water refill station near Gate D. Recycling bins are located at every concourse entrance." },
+    { "id": "ST-03", "nearGate": "Gate B", "message": "Taking the metro instead of driving for this match saves an estimated 2.3kg of CO2 per person." }
+  ]
+}
