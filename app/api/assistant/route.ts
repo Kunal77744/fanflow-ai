@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<ChatApiResponse>(response);
   } catch (err) {
     const message =
-      err instanceof GeminiRequestError
+      err instanceof GeminiRequestError || (err instanceof Error && err.constructor.name === "GeminiRequestError")
         ? err.message
         : "Something went wrong while reaching the assistant.";
 
