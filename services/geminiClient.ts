@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logger } from "@/utils/logger";
 
-const MODEL_NAME = "gemini-2.5-flash";
+const MODEL_NAME = "gemini-3.5-flash";
+const FALLBACK_MODEL_NAME = "gemini-2.5-flash";
 const REQUEST_TIMEOUT_MS = 10_000;
 
 export class GeminiRequestError extends Error {
@@ -44,9 +45,9 @@ export async function generateAssistantReply(prompt: string): Promise<string> {
   }
 
   const client = new GoogleGenerativeAI(apiKey);
-  const model = client.getGenerativeModel({ model: MODEL_NAME });
 
-  const attempt = async (): Promise<string> => {
+  const attempt = async (modelName: string): Promise<string> => {
+    const model = client.getGenerativeModel({ model: modelName });
     const result = await withTimeout(model.generateContent(prompt), REQUEST_TIMEOUT_MS);
     const text = result.response.text();
 
@@ -59,11 +60,11 @@ export async function generateAssistantReply(prompt: string): Promise<string> {
 
   try {
     logger.info("Sending request to Gemini API", { model: MODEL_NAME });
-    return await attempt();
+    return await attempt(MODEL_NAME);
   } catch (firstError) {
-    logger.warn("First attempt failed, retrying Gemini API request", { error: String(firstError) });
+    logger.warn("Primary model attempt failed, retrying Gemini API request with fallback model", { error: String(firstError) });
     try {
-      return await attempt();
+      return await attempt(FALLBACK_MODEL_NAME);
     } catch (secondError) {
       logger.error("All Gemini API attempts failed", secondError);
       if (firstError instanceof GeminiRequestError) throw firstError;

@@ -38,27 +38,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const origin = request.headers.get("origin");
-  const host = request.headers.get("host");
-  if (origin && host) {
-    try {
-      const originHost = new URL(origin).host;
-      if (originHost !== host) {
-        logger.warn("CSRF check failed: origin host mismatch", { origin, host });
-        return NextResponse.json<ApiErrorResponse>(
-          { error: "Forbidden: CSRF verification failed." },
-          { status: 403, headers: SECURITY_HEADERS }
-        );
-      }
-    } catch (err) {
-      logger.error("CSRF check failed: invalid origin header", err);
-      return NextResponse.json<ApiErrorResponse>(
-        { error: "Forbidden: Invalid origin header." },
-        { status: 403, headers: SECURITY_HEADERS }
-      );
-    }
-  }
-
   const clientKey = getClientKey(request);
 
   if (isRateLimited(clientKey)) {
@@ -78,13 +57,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { message, seatSection, accessibilityMode } =
-    (body as Record<string, unknown>) ?? {};
+  const { message, seatSection, accessibilityMode } = body as Record<string, unknown>;
 
   const messageCheck = validateChatMessage(message);
   if (!messageCheck.valid) {
     return NextResponse.json<ApiErrorResponse>(
-      { error: messageCheck.error ?? "Invalid message." },
+      { error: messageCheck.error! },
       { status: 400, headers: SECURITY_HEADERS }
     );
   }
@@ -92,7 +70,7 @@ export async function POST(request: NextRequest) {
   const sectionCheck = validateSeatSection(seatSection);
   if (!sectionCheck.valid) {
     return NextResponse.json<ApiErrorResponse>(
-      { error: sectionCheck.error ?? "Invalid seat section." },
+      { error: sectionCheck.error! },
       { status: 400, headers: SECURITY_HEADERS }
     );
   }
