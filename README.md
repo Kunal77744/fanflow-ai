@@ -63,9 +63,6 @@ A separate lightweight `GET /api/crowd-snapshot` endpoint powers the live gate-s
 
 - **Real FIFA venue data and live IoT crowd sensors are not publicly available**, so this submission uses a realistic, clearly-labeled **simulated dataset** (`data/stadium.json`) and a deterministic crowd-level simulator (`utils/crowdSimulator.ts`). In a production deployment, these would be replaced by integrations with the venue's real gate/seating system and live crowd-sensor feeds — the prompt-building and decision-support logic would not need to change.
 - Gemini's native multilingual ability is relied on directly (via system-prompt instruction) rather than a separate translation API, keeping the system simpler and faster.
-- **Single-instance deployment is assumed** for the demo. The in-memory rate limiter and response cache are intentionally simple (documented in code) and would be swapped for a shared store (e.g. Redis) behind the same function signatures in a multi-instance production deployment — no calling code would need to change.
-- **A single fan-facing session is assumed per request** (no persistent user accounts or login), matching how most fans would use an on-site kiosk or their own phone for a single match visit.
-- **Seat section and gate data are treated as static reference data** for the duration of a match day; the simulated crowd levels are the only value that changes in real time, mirroring how gate congestion — not the physical stadium layout — is what actually changes minute-to-minute on match day.
 
 ## Tech Stack
 
