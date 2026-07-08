@@ -5,9 +5,10 @@
  * production/multi-instance setup this would be backed by Redis or a
  * similar shared store instead of process memory.
  */
+import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS } from "@/utils/constants";
 
-const WINDOW_MS = 60_000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 20;
+const WINDOW_MS = RATE_LIMIT_WINDOW_MS;
+const MAX_REQUESTS_PER_WINDOW = RATE_LIMIT_MAX_REQUESTS;
 
 interface Bucket {
   count: number;

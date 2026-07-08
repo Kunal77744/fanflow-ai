@@ -1,5 +1,7 @@
-const MAX_MESSAGE_LENGTH = 500;
-const MIN_MESSAGE_LENGTH = 1;
+import { CHAT_MESSAGE_MAX_LENGTH, CHAT_MESSAGE_MIN_LENGTH } from "@/utils/constants";
+
+const MAX_MESSAGE_LENGTH = CHAT_MESSAGE_MAX_LENGTH;
+const MIN_MESSAGE_LENGTH = CHAT_MESSAGE_MIN_LENGTH;
 
 export interface ValidationResult {
   valid: boolean;

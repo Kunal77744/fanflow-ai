@@ -1,8 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logger } from "@/utils/logger";
+import { GEMINI_REQUEST_TIMEOUT_MS } from "@/utils/constants";
 
 const MODEL_NAME = "gemini-2.5-flash";
-const REQUEST_TIMEOUT_MS = 10_000;
+const REQUEST_TIMEOUT_MS = GEMINI_REQUEST_TIMEOUT_MS;
 
 export class GeminiRequestError extends Error {
   constructor(message: string, options?: ErrorOptions) {
