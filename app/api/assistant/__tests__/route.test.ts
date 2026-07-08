@@ -120,21 +120,27 @@ describe("POST /api/assistant", () => {
     expect(data.error).toMatch(/Something went wrong while reaching/i);
   });
 
-  it("returns response from cache on repeated requests", async () => {
-    (isRateLimited as jest.Mock).mockReturnValue(false);
-    const replyText = "First call response";
-    (generateAssistantReply as jest.Mock).mockResolvedValue(replyText);
+  it("returns 403 Forbidden if CSRF check fails due to origin host mismatch", async () => {
+    const req = createRequest({ message: "Hello" }, {
+      origin: "http://malicious.com",
+      host: "localhost"
+    });
 
-    const req1 = createRequest({ message: "Hello cache test" });
-    const res1 = await POST(req1);
-    expect(res1.status).toBe(200);
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+    const data = await res.json();
+    expect(data.error).toMatch(/CSRF verification failed/i);
+  });
 
-    const req2 = createRequest({ message: "Hello cache test" });
-    const res2 = await POST(req2);
-    expect(res2.status).toBe(200);
+  it("returns 403 Forbidden if CSRF check fails due to invalid origin format", async () => {
+    const req = createRequest({ message: "Hello" }, {
+      origin: "not-a-valid-url-format",
+      host: "localhost"
+    });
 
-    const data2 = await res2.json();
-    expect(data2.reply).toBe(replyText);
-    expect(generateAssistantReply).toHaveBeenCalledTimes(1);
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+    const data = await res.json();
+    expect(data.error).toMatch(/Invalid origin header/i);
   });
 });

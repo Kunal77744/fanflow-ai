@@ -31,7 +31,7 @@ Next.js API Route
    │  3. read simulated live crowd levels
    │  4. build a context-rich prompt (venue facts + live crowd + user message)
    ▼
-Gemini API (gemini-3.5-flash with gemini-2.5-flash fallback)
+Gemini API (gemini-2.5-flash)
    │  reasons over the given facts only; detects & replies in user's language
    ▼
 Response → UI renders reply + crowd advisory badge
@@ -50,7 +50,7 @@ A separate lightweight `GET /api/crowd-snapshot` endpoint powers the live gate-s
 
 - **Frontend:** Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + Framer Motion
 - **Backend:** Next.js API routes (same repo, single deploy)
-- **AI:** Google Gemini API (`gemini-3.5-flash` as primary, with automatic fallback to stable `gemini-2.5-flash` for high availability resilience)
+- **AI:** Google Gemini API (`gemini-2.5-flash`, free tier)
 - **Testing:** Jest + React Testing Library (24 tests covering prompt building, validation, crowd simulation, and component rendering)
 
 ## Project Structure

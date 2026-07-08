@@ -17,13 +17,6 @@ interface CacheEntry {
 const queryCache = new Map<string, CacheEntry>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
-const SECURITY_HEADERS = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "Content-Security-Policy": "default-src 'self'",
-  "Referrer-Policy": "no-referrer"
-};
-
 function getClientKey(request: NextRequest): string {
   // Best-effort client identifier for rate limiting. Falls back to a
   // shared bucket if no forwarding header is present (e.g. local dev).
@@ -34,8 +27,29 @@ export async function POST(request: NextRequest) {
   if (request.headers.get("content-length") && Number(request.headers.get("content-length")) > 5000) {
     return NextResponse.json<ApiErrorResponse>(
       { error: "Payload too large." },
-      { status: 413, headers: SECURITY_HEADERS }
+      { status: 413 }
     );
+  }
+
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  if (origin && host) {
+    try {
+      const originHost = new URL(origin).host;
+      if (originHost !== host) {
+        logger.warn("CSRF check failed: origin host mismatch", { origin, host });
+        return NextResponse.json<ApiErrorResponse>(
+          { error: "Forbidden: CSRF verification failed." },
+          { status: 403 }
+        );
+      }
+    } catch (err) {
+      logger.error("CSRF check failed: invalid origin header", err);
+      return NextResponse.json<ApiErrorResponse>(
+        { error: "Forbidden: Invalid origin header." },
+        { status: 403 }
+      );
+    }
   }
 
   const clientKey = getClientKey(request);
@@ -43,7 +57,7 @@ export async function POST(request: NextRequest) {
   if (isRateLimited(clientKey)) {
     return NextResponse.json<ApiErrorResponse>(
       { error: "Too many requests. Please wait a moment before trying again." },
-      { status: 429, headers: SECURITY_HEADERS }
+      { status: 429 }
     );
   }
 
@@ -53,25 +67,26 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json<ApiErrorResponse>(
       { error: "Request body must be valid JSON." },
-      { status: 400, headers: SECURITY_HEADERS }
+      { status: 400 }
     );
   }
 
-  const { message, seatSection, accessibilityMode } = body as Record<string, unknown>;
+  const { message, seatSection, accessibilityMode } =
+    (body as Record<string, unknown>) ?? {};
 
   const messageCheck = validateChatMessage(message);
   if (!messageCheck.valid) {
     return NextResponse.json<ApiErrorResponse>(
-      { error: messageCheck.error! },
-      { status: 400, headers: SECURITY_HEADERS }
+      { error: messageCheck.error ?? "Invalid message." },
+      { status: 400 }
     );
   }
 
   const sectionCheck = validateSeatSection(seatSection);
   if (!sectionCheck.valid) {
     return NextResponse.json<ApiErrorResponse>(
-      { error: sectionCheck.error! },
-      { status: 400, headers: SECURITY_HEADERS }
+      { error: sectionCheck.error ?? "Invalid seat section." },
+      { status: 400 }
     );
   }
 
@@ -80,7 +95,7 @@ export async function POST(request: NextRequest) {
 
   if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
     logger.info("Serving response from cache", { cacheKey });
-    return NextResponse.json<ChatApiResponse>(cached.response, { headers: SECURITY_HEADERS });
+    return NextResponse.json<ChatApiResponse>(cached.response);
   }
 
   const crowdLevels = getSimulatedCrowdLevels();
@@ -106,7 +121,7 @@ export async function POST(request: NextRequest) {
     queryCache.set(cacheKey, { response, timestamp: Date.now() });
     logger.info("Cached new response", { cacheKey });
 
-    return NextResponse.json<ChatApiResponse>(response, { headers: SECURITY_HEADERS });
+    return NextResponse.json<ChatApiResponse>(response);
   } catch (err) {
     logger.error("Error generating assistant reply", err);
     const message =
@@ -114,6 +129,6 @@ export async function POST(request: NextRequest) {
         ? err.message
         : "Something went wrong while reaching the assistant.";
 
-    return NextResponse.json<ApiErrorResponse>({ error: message }, { status: 502, headers: SECURITY_HEADERS });
+    return NextResponse.json<ApiErrorResponse>({ error: message }, { status: 502 });
   }
 }

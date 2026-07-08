@@ -70,10 +70,5 @@
     { "id": "ST-01", "nearGate": "Gate B", "message": "Free water refill station 80m from Gate B — bring a reusable bottle to cut down on plastic waste." },
     { "id": "ST-02", "nearGate": "Gate D", "message": "Free water refill station near Gate D. Recycling bins are located at every concourse entrance." },
     { "id": "ST-03", "nearGate": "Gate B", "message": "Taking the metro instead of driving for this match saves an estimated 2.3kg of CO2 per person." }
-  ],
-  "tournamentMatches": [
-    { "id": "M-01", "date": "2026-06-15", "time": "18:00 UTC", "teams": "United States vs England", "stage": "Group Stage", "status": "Scheduled" },
-    { "id": "M-02", "date": "2026-06-18", "time": "20:00 UTC", "teams": "Mexico vs Spain", "stage": "Group Stage", "status": "Scheduled" },
-    { "id": "M-03", "date": "2026-06-22", "time": "15:00 UTC", "teams": "Canada vs Brazil", "stage": "Group Stage", "status": "Scheduled" }
   ]
 }

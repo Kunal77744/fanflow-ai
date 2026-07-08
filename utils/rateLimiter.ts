@@ -18,16 +18,6 @@ const buckets = new Map<string, Bucket>();
 
 export function isRateLimited(clientKey: string): boolean {
   const now = Date.now();
-
-  // Periodic pruning of expired buckets to prevent memory leaks
-  if (buckets.size > 1000) {
-    for (const [key, value] of buckets.entries()) {
-      if (now - value.windowStart > WINDOW_MS) {
-        buckets.delete(key);
-      }
-    }
-  }
-
   const existing = buckets.get(clientKey);
 
   if (!existing || now - existing.windowStart > WINDOW_MS) {

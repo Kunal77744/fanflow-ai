@@ -9,14 +9,7 @@ export const dynamic = "force-dynamic";
  * status frequently without invoking the (rate-limited, LLM-backed)
  * chat endpoint.
  */
-const SECURITY_HEADERS = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "Content-Security-Policy": "default-src 'self'",
-  "Referrer-Policy": "no-referrer",
-};
-
 export async function GET() {
   const levels = getSimulatedCrowdLevels();
-  return NextResponse.json({ levels }, { headers: SECURITY_HEADERS });
+  return NextResponse.json({ levels });
 }
