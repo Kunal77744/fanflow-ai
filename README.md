@@ -8,6 +8,24 @@ FanFlow AI is a GenAI-powered on-site assistant for **fans** attending FIFA Worl
 
 The challenge asks solutions to be designed around one persona: fans, organizers, volunteers, or venue staff. FanFlow AI is built for **fans on match day** — the people who most need fast, human, in-the-moment help navigating an unfamiliar stadium in a language that may not be the venue's default.
 
+## Why "Fans" and How This Maps to the Full Challenge Brief
+
+The challenge — **Smart Stadiums & Tournament Operations** — explicitly allows a solution to be designed around **one** persona: fans, organizers, volunteers, or venue staff. FanFlow AI deliberately targets **fans on match day**, because they are the largest audience, have the least institutional support on-site, and benefit most immediately from real-time, multilingual, on-site guidance.
+
+This is a **scoping decision, not a gap**. Within the fan-facing scope, FanFlow AI covers every theme named in the brief:
+
+| Challenge Theme | Covered? | Where |
+|---|---|---|
+| Navigation | ✅ | Seat section → gate, walk time, amenities |
+| Crowd management / real-time decision support | ✅ | Live gate-status ticker + proactive lower-traffic gate suggestions |
+| Accessibility | ✅ | Dedicated high-contrast mode; AI biases toward wheelchair-accessible routes |
+| Transportation | ✅ | Nearest metro/bus/parking, walk distance |
+| Sustainability | ✅ | Refill stations, low-emission transport nudges |
+| Multilingual assistance | ✅ | Native LLM language detection and reply |
+| Operational intelligence | ✅ | Simulated live crowd data drives assistant responses |
+
+**Explicitly out of scope:** organizer/volunteer-facing tools (match scheduling, staffing, venue-ops dashboards) — this is the other half of the challenge title, and would belong to an "Organizer" or "Venue Staff" persona submission. We chose depth on one persona over shallow coverage of all four, per the challenge's own instruction to "choose one of the provided challenge verticals."
+
 ## Capabilities (mapped to the problem statement)
 
 | Capability | What it does | Problem statement theme |
