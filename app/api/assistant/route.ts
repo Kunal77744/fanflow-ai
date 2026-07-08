@@ -118,6 +118,11 @@ export async function POST(request: NextRequest) {
       }),
     };
 
+    for (const [key, entry] of queryCache) {
+      if (Date.now() - entry.timestamp >= CACHE_TTL_MS) {
+        queryCache.delete(key);
+      }
+    }
     queryCache.set(cacheKey, { response, timestamp: Date.now() });
     logger.info("Cached new response", { cacheKey });
 
@@ -125,7 +130,7 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     logger.error("Error generating assistant reply", err);
     const message =
-      err instanceof GeminiRequestError || (err instanceof Error && err.constructor.name === "GeminiRequestError")
+      err instanceof GeminiRequestError
         ? err.message
         : "Something went wrong while reaching the assistant.";
 
